@@ -1,0 +1,253 @@
+{% extends 'core/core_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+
+
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == "success" %}
+<div class="w-3/4 ml-72 p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+  {{message}}
+</div>
+{% else %}
+<div class="w-3/4 ml-72 p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+  <strong>Error! </strong>{{message}}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+<form method="POST" id="checkoutForm" action="{% url 'checkout' %}">
+  {% csrf_token %}
+  <div class="mx-auto">
+    <div class="m-12 border shadow p-6">
+
+      <h5 class="font-bold text-3xl mb-3">Address</h5>
+      <hr/>
+      <p class="my-3">Choose from the addresses below:</p>
+
+      <button class="rounded-lg bg-blue-600 px-4 py-2 text-white"><a href="{% url 'add_address'  %}">Add a new Address +</a></button>
+
+      <div id="addressContainer" class="my-5 grid grid-cols-2 md:grid-cols-3 gap-4">
+        {% for address in addresses %}
+          <a href="#" class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+            <div class="flex">
+              <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{address.name}}</h5>
+              <span class="ml-36 mt-1">{% if address.is_default %}Default{% endif %}</span>  <input type="radio" id="address_{{ forloop.counter }}" name="address" value="{{ address.id }}" class="ml-12">
+            </div>
+            <p class="font-normal text-gray-700 dark:text-gray-400">{{address.address_line1}}</p>
+           
+          </a>
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <div class="flex">
+      <div class="flex-initial w-1/2">
+        <div class="m-12 border shadow p-6">
+          <h5 class="font-bold text-3xl mb-3">Payment Method</h5>
+          <hr/>
+          <p class="my-3">Choose from the options below:</p>
+
+          <!-- Render the payment method form fields -->
+      
+{% for radio in form.payment_method %}
+  <div id="paymentMethodContainer" class="radio-button">
+    {{ radio }}
+   
+  
+
+
+  </div>
+
+  
+  
+
+{% endfor %}
+<p>Wallet Balance : {{wallet.balance}}</p>
+<input type="hidden"  id="paymentDoneInput" name="overall_total" value="{{ overall_total }}">
+<div id="paypal-button-container"></div>
+        </div>
+      </div>
+    
+
+      <div class="flex-initial mx-auto w-1/2">
+        <div class="m-12 border shadow p-6 bg-white">
+          <h2 class="text-lg font-semibold mb-4">Summary</h2>
+          <div class="flex justify-between mb-2">
+            <span>Subtotal</span>
+            <span>₹{{ overall_total }}</span>
+          </div>
+          <div class="flex justify-between mb-2">
+            <span>Taxes</span>
+            <span>$0.00</span>
+          </div>
+          <div class="flex justify-between mb-2">
+            <span>Shipping</span>
+            <span>$0.00</span>
+          </div>
+          <hr class="my-2">
+          <div class="flex justify-between mb-2">
+            {% if discounted_price %}
+            <span class="font-semibold">Total</span>
+        <span> ${{ discounted_price }}</span>
+     {% else %}
+            <span class="font-semibold">Total</span>
+            <span class="font-semibold">${{ overall_total }}</span>
+            {% endif %}
+          </div>
+          <button class="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 w-full" type="submit">Place Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="flex">
+  <div class="flex-initial w-1/2">
+    <div class="m-12 border shadow p-6">
+      <h5 class="font-bold text-3xl mb-3">Coupon</h5>
+      <hr/>
+      <p class="my-3">Enter your coupon code below : </p>
+      <form method="post" action="{% url 'checkout' %}">
+        {%csrf_token%}
+      <input type="text" name="coupon_code" id="coupon" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Coupon Code"> 
+      <button class="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 w-full" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Restore the selected values of radio buttons after a page reload
+    const addressRadio = document.querySelector('input[name="address"]:checked');
+    const paymentMethodRadio = document.querySelector('input[name="payment_method"]:checked');
+
+    if (addressRadio) {
+      addressRadio.checked = true;
+    }
+
+    if (paymentMethodRadio) {
+      paymentMethodRadio.checked = true;
+    }
+
+    // Save the selected values to local storage when the form is submitted
+    const checkoutForm = document.getElementById('checkoutForm');
+    checkoutForm.addEventListener('submit', function () {
+      const selectedAddress = document.querySelector('input[name="address"]:checked');
+      const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked');
+
+      if (selectedAddress) {
+        localStorage.setItem('selectedAddress', selectedAddress.value);
+      }
+
+      if (selectedPaymentMethod) {
+        localStorage.setItem('selectedPaymentMethod', selectedPaymentMethod.value);
+      }
+    });
+
+    // Check local storage for previously selected values and set the radio buttons
+    const storedAddress = localStorage.getItem('selectedAddress');
+    const storedPaymentMethod = localStorage.getItem('selectedPaymentMethod');
+
+    if (storedAddress) {
+      document.querySelector(`input[name="address"][value="${storedAddress}"]`).checked = true;
+    }
+
+    if (storedPaymentMethod) {
+      document.querySelector(`input[name="payment_method"][value="${storedPaymentMethod}"]`).checked = true;
+    }
+  });
+</script>
+<form action="{% url 'order_confirmation' %}" method="POST">
+  {%csrf_token%}
+  <script
+      src="https://checkout.razorpay.com/v1/checkout.js"
+      data-key="rzp_test_YnJ9v2rxFkA28x" // Enter the Test API Key ID generated from Dashboard → Settings → API Keys
+      data-amount="{{overall_total_cents}}}" // Amount is in currency subunits. Hence, 29935 refers to 29935 paise or ₹299.35.
+      data-currency="INR"// You can accept international payments by changing the currency code. Contact our Support Team to enable International for your account
+      data-order_id="{{order_id}}"// Replace with the order_id generated by you in the backend.
+      data-buttontext="Pay with Razorpay"
+      data-name="Alaia Cosmetics"
+      data-description=""
+      data-image="{% static 'images\backgrounds\Admin_logo.png' %}"
+      data-prefill.name="Alaia Cosmetics"
+      data-prefill.email="{{user.email}}"
+      data-theme.color="blue"
+      data-method="upi"
+  ></script>
+  <input type="hidden" custom="Hidden Element" name="hidden"/>
+  </form> 
+
+ {% comment %} <script src="https://www.paypal.com/sdk/js?client-id=AUBlmfAZUuaAzqsla8EKv764JTkJCciGvfexs1-wEgtsdrD1iSYuOdPOy-KQb3yPJLUoQqecAgRlBOjr"></script>
+
+<script src="https://www.paypal.com/sdk/js?client-id=AUBlmfAZUuaAzqsla8EKv764JTkJCciGvfexs1-wEgtsdrD1iSYuOdPOy-KQb3yPJLUoQqecAgRlBOjr&currency=USD"></script> {% endcomment %}
+
+ {% comment %} <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const checkoutForm = document.getElementById('checkoutForm');
+    const paypalButtonContainer = document.getElementById('paypal-button-container');
+
+    checkoutForm.addEventListener('submit', function () {
+      const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked');
+
+      if (selectedPaymentMethod && selectedPaymentMethod.value === 'paypal') {
+        paypalButtonContainer.classList.remove('hidden');
+      }
+    });
+
+    paypal.Buttons({
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              currency_code: 'USD',
+              value: '{{overall_total}}',
+            },
+          }],
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+      
+        });
+      },
+    }).render('#paypal-button-container');
+  });
+</script> {% endcomment %}
+
+
+{% comment %} <script src="https://www.paypal.com/sdk/js?client-id=AUBlmfAZUuaAzqsla8EKv764JTkJCciGvfexs1-wEgtsdrD1iSYuOdPOy-KQb3yPJLUoQqecAgRlBOjr"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=AUBlmfAZUuaAzqsla8EKv764JTkJCciGvfexs1-wEgtsdrD1iSYuOdPOy-KQb3yPJLUoQqecAgRlBOjr&currency=USD"></script> {% endcomment %}
+
+{% comment %} <script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    paypal.Buttons({
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              currency_code: 'USD',
+              value: '{{overall_total}}',  
+            },
+          }],
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          alert('Transaction completed by ' + details.payer.name.given_name);
+        });
+      },
+    }).render('#paypal-button-container');
+  });
+</script> {% endcomment %}
+
+
+
+
+
+{% endblock content %}

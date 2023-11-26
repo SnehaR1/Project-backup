@@ -1,0 +1,79 @@
+{% extends 'admin/admin_base.html'%}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}Admin | Product{% endblock %}
+{% block content %}
+
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == "success" %}
+<div class="w-3/4 ml-72 p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+  {{message}}
+</div>
+{% else %}
+<div class="w-3/4 ml-72 p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+  <strong>Error! </strong>{{message}}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+<form class=" w-3/4 ml-72" enctype="multipart/form-data" method="post" >
+  {% csrf_token%}
+ 
+  <div class="mb-6">
+    <label for="{{ form.product.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Name</label>
+    {% render_field form.product class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+  </div> 
+  <div class="mb-6">
+    <label for="{{ form.image.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product image</label>
+    {% if form.instance.image %}
+        <img src="{{ form.instance.image.url }}" alt="Product Image" class="mb-2" style="max-width: 200px;">
+    {% endif %}
+    {% render_field form.image class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+</div>
+  <div class="mb-6">
+    <label for="{{ form.new_color.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Color</label>
+    {% render_field form.new_color class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+  </div> 
+  <div class="mb-6">
+    <label for="{{ form.new_quantity.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity</label>
+    {% render_field form.new_quantity class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+  </div> 
+
+
+<div class="mb-6">
+    <label for="{{ form.stock.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stock</label>
+    {% render_field form.stock class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+</div>
+
+<div class="mb-6">
+  <label for="{{ form.old_price.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">old_price</label>
+  {% render_field form.old_price class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+</div>
+
+<div class="mb-6">
+    <label for="{{ form.price.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">price</label>
+    {% render_field form.price class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+  </div>
+  
+
+  <div class="mb-6 flex">
+    <label for="{{ img_form.images.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Additional images : </label>
+    <input class="ml-4" type="file" id="{{ img_form.images.id_for_label }}" name="images" multiple>
+
+ 
+</div>
+<div class="mb-6 flex">
+    {% for img in product_variant.productimages_set.all %}
+        <img src="{{ img.images.url }}" alt="Additional Image" class="mb-2" style="max-width: 200px;">
+    {% endfor %}
+</div>
+
+
+
+    <button type="submit" class=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+  </form>
+
+    
+  {% endblock %}  

@@ -1,0 +1,71 @@
+
+{% extends 'base.html' %}
+
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}Alaia | SignUp{% endblock %}
+{% block content %}
+
+  <body class="h-screen bg-no-repeat bg-cover bg-top" style="background-image: url('{% static "images/backgrounds/signupbg.png" %}');">
+    <h1 class="flex flex-wrap gap-2 space-y-4 space-x-24 mt-6 grid text-white text-5xl font-bold ml-12">Sign Up</h1>
+  
+    <form class="flex flex-wrap gap-2 space-y-4 space-x-12 mt-6 " method="POST">
+      {% if messages %}
+      {% for message in messages %}
+      {% if message.tags == "success" %}
+      {% comment %} <div class=" w-1/4 ml-12 p-4  text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+        {{message}}
+      </div> {% endcomment %}
+      {% else %}
+      <div class="w-1/4 ml-12 p-4  text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+        <strong>Error! </strong>{{message}}
+      </div>
+      {% endif %}
+      {% endfor %}
+      {% endif %}
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      {% comment %} form content {% endcomment %}
+      <div class="flex flex-col gap-2 col-span-1 ">
+        {{ form.first_name.errors }}
+          <label for="{{ form.first_name.id_for_label }}" class="block font-medium mb-2 text-white">First Name:</label>
+          {% render_field form.first_name class=" border p-2 rounded border border-purple-500 bg-purple-100  focus:outline-none focus:border-purple-500" %}
+        </div>
+      
+          <div class=" flex flex-col gap-2 col-span-1">
+            {{ form.last_name.errors }}
+        <label for="{{ form.last_name.id_for_label }}" class="block font-medium mb-2 text-white">Last Name:</label>
+        {% render_field form.last_name class="border p-2 rounded border border-purple-500  bg-purple-100  focus:outline-none focus:border-purple-500" %}
+    </div>
+
+      <div class="w-3/4">
+        {{ form.email.errors }}
+          <label for="{{ form.email.id_for_label }}" class="block font-medium mb-2 text-white">Email:</label>
+          {% render_field form.email class="w-2/5 border p-2 rounded border border-purple-500 bg-purple-100  focus:outline-none focus:border-purple-500 " %}
+      </div>
+
+      <div class="w-3/4">
+        {{ form.phone_number.errors }}
+        <label for="{{ form.phone_number.id_for_label }}" class="block font-medium mb-2 text-white">Phone Number:</label>
+        {% render_field form.phone_number class="w-2/5 border p-2 rounded border border-purple-500 bg-purple-100  focus:outline-none focus:border-purple-500" %}
+    </div>
+
+      <div class="w-3/4">
+        {{ form.password1.errors }}
+        <label for="{{ form.password1.id_for_label }}" class="block font-medium mb-2 text-white">Password:</label>
+        {% render_field form.password1 class="w-2/5 border p-2 rounded border border-purple-500 bg-purple-100  focus:outline-none focus:border-purple-500" %}
+    </div>
+    
+      <div class="w-3/4">
+        {{ form.password2.errors }}
+          <label for="{{ form.password2.id_for_label }}" class="block font-medium mb-2 text-white">Confirm Password:</label>
+          {% render_field form.password2 class="w-2/5 border p-2 rounded border border-purple-500e bg-purple-100 focus:outline-none focus:border-purple-500" %}
+      </div>
+      <div class="w-1/2 flex flex-wrap mr-72">
+      <p><a class="text-white text-bold " href="{% url 'login_view' %}">Already have an account? Log In</a></p>
+      </div>
+      <div class="w-full ">
+          <input type="submit" value="Create Account" class="w-1/4 bg-purple-500 hover:bg-purple-600 text-white p-2 rounded ml-9">
+      </div>
+  </form>
+  {% endblock content %}

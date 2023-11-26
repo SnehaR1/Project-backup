@@ -1,0 +1,72 @@
+{% extends 'admin/admin_base.html'%}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}Admin | Product{% endblock %}
+{% block content %}
+
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == "success" %}
+<div class="w-3/4 ml-72 p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+  {{message}}
+</div>
+{% else %}
+<div class="w-3/4 ml-72 p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+  <strong>Error! </strong>{{message}}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+<button  class="ml-72 flex flex-wrap bg-red-500 text-white w-32 h-8 border-black rounded" type="button">
+    <a class="ml-2 mt-1" href="{% url 'add_coupon' %}">
+        Add Coupon +
+    </a>
+</button>
+   
+    <table class="w-3/4 ml-72 text-sm text-left text-gray-500 dark:text-gray-400">
+       
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Coupon Code
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Discount Percentage
+                </th>
+              
+                <th scope="col" class="px-6 py-3">
+                    Valid From
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Valid To
+                </th>
+             
+                <th scope="col" class="px-6 py-3">
+                    Active
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for coupon in coupons %}
+            <td class="px-6 py-4">
+                {{coupon.hashed_code}}
+            </td>
+            <td class="px-6 py-4">
+                {{coupon.discount_percentage}}
+            </td>
+            <td class="px-6 py-4">
+                {{coupon.valid_from}}
+            </td>
+            <td class="px-6 py-4">
+                {{coupon.valid_to}}
+            </td>
+            <td class="px-6 py-4">
+                {{coupon.active}}
+            </td>
+           {%endfor%}
+        </tbody>
+      
+    </table>
+</div>
+{% endblock %}  

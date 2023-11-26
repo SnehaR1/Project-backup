@@ -1,0 +1,42 @@
+
+{% extends 'core/core_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+
+<div class="flex justify-center item-center">
+  <div id="paypal-button-container">
+    Overall Total: {{ overall_total }}
+  </div>
+</div>
+
+
+
+
+<script src="https://www.paypal.com/sdk/js?client-id=AUBlmfAZUuaAzqsla8EKv764JTkJCciGvfexs1-wEgtsdrD1iSYuOdPOy-KQb3yPJLUoQqecAgRlBOjr"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=AUBlmfAZUuaAzqsla8EKv764JTkJCciGvfexs1-wEgtsdrD1iSYuOdPOy-KQb3yPJLUoQqecAgRlBOjr&currency=USD"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Render PayPal buttons
+    paypal.Buttons({
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              currency_code: 'USD',
+              value: '{{overall_total}}',  // Replace with your order amount
+            },
+          }],
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          alert('Transaction completed by ' + details.payer.name.given_name);
+        });
+      },
+    }).render('#paypal-button-container');
+  });
+</script>
+
+{% endblock content %}

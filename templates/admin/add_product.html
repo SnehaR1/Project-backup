@@ -1,0 +1,55 @@
+{% extends 'admin/admin_base.html'%}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}Admin | Product{% endblock %}
+{% block content %}
+
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == "success" %}
+<div class="w-3/4 ml-72 p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+  {{message}}
+</div>
+{% else %}
+<div class="w-3/4 ml-72 p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+  <strong>Error! </strong>{{message}}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+<form class=" w-3/4 ml-72" enctype="multipart/form-data" method="post" >
+  {% csrf_token%}
+  <div class="mb-6">
+    {{ form.title.errors }}
+    <label for="{{ form.title.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Name</label>
+    {% render_field form.title class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+
+</div>
+
+<div class="mb-6">
+    <label for="{{ form.brand.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Brand</label>
+    {% render_field form.brand class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+</div>
+
+<div class="mb-6">
+  <label for="{{ form.category.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
+  {% render_field form.category class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+</div>
+
+
+<div class="mb-6">
+  <label for="{{ form.description.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Description</label>
+  {% render_field form.description class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+</div>
+
+
+<div class="mb-6">
+  <label for="{{ form.specifications.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Specifications</label>
+  {% render_field form.specifications class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+</div>
+
+    <button type="submit" class=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+  </form>
+
+  {% endblock %}  

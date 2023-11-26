@@ -1,0 +1,63 @@
+{% extends 'admin/admin_base.html'%}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}Admin | Users{% endblock %}
+{% block content %}
+
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == "success" %}
+<div class=" w-3/4 ml-72 p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+  {{message}}
+</div>
+{% else %}
+<div class="w-3/4 ml-72 p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+  <strong>Error! </strong>{{message}}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+<div class="flex flex-wrap justify-center items-start ml-12 mt-12 w-3/4 bg-gray-50 p-8 shadow-lg rounded-lg ml-72">
+    <h2 class="font-bold text-4xl text-black mb-8 w-full text-center ">Edit User</h2>
+    <form class="flex flex-wrap justify-center gap-6 w-full " method="POST">
+       {% csrf_token %}
+       {{ form.non_field_errors }}
+       {% comment %} form content {% endcomment %}
+ 
+       <div class="flex flex-col gap-2 w-1/2">
+          {{ form.first_name.errors }}
+          <label for="{{ form.first_name.id_for_label }}" class="block font-medium text-black">First Name:</label>
+          {% render_field form.first_name class="w-full border p-2 rounded bg-transparent focus:outline-none focus:ring-2 focus:ring-purple-500" %}
+       </div>
+     
+       <div class="flex flex-col gap-2 w-1/2">
+          {{ form.last_name.errors }}
+          <label for="{{ form.last_name.id_for_label }}" class="block font-medium text-black">Last Name:</label>
+          {% render_field form.last_name class="w-full border p-2 rounded bg-transparent focus:outline-none focus:ring-2 focus:ring-purple-500" %}
+       </div>
+ 
+       <div class="flex flex-col gap-2 w-1/2">
+          {{ form.email.errors }}
+          <label for="{{ form.email.id_for_label }}" class="block font-medium text-black">Email:</label>
+          {% render_field form.email class="w-full border p-2 rounded bg-transparent focus:outline-none focus:ring-2 focus:ring-purple-500" %}
+       </div>
+ 
+       <div class="flex flex-col gap-2 w-1/2">
+          {{ form.phone_number.errors }}
+          <label for="{{ form.phone_number.id_for_label }}" class="block font-medium text-black">Phone Number:</label>
+          {% render_field form.phone_number class="w-full border p-2 rounded bg-transparent focus:outline-none focus:ring-2 focus:ring-purple-500" %}
+       </div>
+     
+       
+    
+    
+
+
+       <div class="w-full flex justify-center mt-6">
+          <input type="submit" value="Edit User" class="bg-red-500 hover:bg-red-600 text-white py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-red-500">
+       </div>
+    </form>
+ </div>
+ 
+{% endblock %}  

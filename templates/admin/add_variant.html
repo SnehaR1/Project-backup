@@ -1,0 +1,135 @@
+{% extends 'admin/admin_base.html'%}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}Admin | Product{% endblock %}
+{% block content %}
+
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == "success" %}
+<div class="w-3/4 ml-72 p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+  {{message}}
+</div>
+{% else %}
+<div class="w-3/4 ml-72 p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+  <strong>Error! </strong>{{message}}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+<form class=" w-3/4 ml-72" enctype="multipart/form-data" method="post" >
+  {% csrf_token%}
+ 
+  <div class="mb-6">
+    <label for="{{ form.product.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Name</label>
+    {% render_field form.product class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+  </div> 
+
+  <div class="mb-6">
+    <label for="{{ form.image.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product image</label>
+    <input type="file" id="{{ form.image.id_for_label }}" name="{{ form.image.name }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" onchange="readURL(this)">
+    <div class="cropper-container">
+      <img id="cropper-image" class="img-preview" alt="Preview Image">
+    </div>
+    <div id="cropped_result" class="mt-4"></div>
+    <button id="crop_button">Crop</button> 
+    {% comment %} {% render_field form.image class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %} {% endcomment %}
+  </div> 
+  <div class="mb-6">
+    <label for="{{ form.new_color.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Color</label>
+    {% render_field form.new_color class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+  </div> 
+  <div class="mb-6">
+    <label for="{{ form.new_quantity.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity</label>
+    {% render_field form.new_quantity class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+  </div> 
+
+
+<div class="mb-6">
+    <label for="{{ form.stock.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stock</label>
+    {% render_field form.stock class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+</div>
+
+<div class="mb-6">
+  <label for="{{ form.old_price.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">old_price</label>
+  {% render_field form.old_price class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+</div>
+
+<div class="mb-6">
+    <label for="{{ form.price.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">price</label>
+    {% render_field form.price class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %}
+  </div>
+  
+  <div class="mb-6">
+    <label for="{{ img_form.images.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Additional images</label>
+    <input type="file" id="{{ img_form.images.id_for_label }}" name="images" multiple>
+  </div>
+  
+
+    <button type="submit" class=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+  </form>
+
+  <script>
+    function readURL(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          $('#cropper-image').attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+        // Initialize Cropper after a short delay
+        setTimeout(initCropper, 1000);
+      }
+    }
+  
+    function initCropper() {
+      var image = document.getElementById('cropper-image');
+      var cropper = new Cropper(image, {
+        aspectRatio: 16 / 9,
+        crop: function (e) {
+          console.log(e.detail.x);
+          console.log(e.detail.y);
+        }
+      });
+  
+      // On crop button clicked
+      document.getElementById('crop_button').addEventListener('click', function () {
+        var croppedCanvas = cropper.getCroppedCanvas();
+        var imgurl = croppedCanvas.toDataURL();
+  
+        // Create a Blob from the canvas and append it to FormData
+        croppedCanvas.toBlob(function (blob) {
+          var formData = new FormData();
+          formData.append('croppedImage', blob);
+  
+          // Use AJAX to submit the form data
+          $.ajax({
+            url: '/path/to/upload',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function () {
+              console.log('Upload success');
+            },
+            error: function () {
+              console.log('Upload error');
+            }
+          });
+        });
+  
+        // Display the cropped image
+        var img = document.createElement("img");
+        img.src = imgurl;
+        document.getElementById("cropped_result").appendChild(img);
+      });
+    }
+  </script>
+
+  <!-- Include Cropper.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js"></script>
+    
+  {% endblock %}  

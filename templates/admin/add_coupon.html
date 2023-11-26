@@ -1,0 +1,62 @@
+{% extends 'admin/admin_base.html'%}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}Admin | Coupon{% endblock %}
+{% block content %}
+
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == "success" %}
+<div class="w-3/4 ml-72 p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+  {{message}}
+</div>
+{% else %}
+<div class="w-3/4 ml-72 p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+  <strong>Error! </strong>{{message}}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+<div class="">
+<form class="w-3/4 ml-72"  method="post">
+  {% csrf_token %}
+  
+  <div class="mb-6">
+    <label for="{{ form.hashed_code.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Coupon Code</label>
+    {% render_field form.hashed_code class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Enter coupon code" %}
+  </div>
+
+  <div class="mb-6">
+    <label for="{{ form.discount_percentage.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Discount Percentage</label>
+    {% render_field form.discount_percentage class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Enter discount percentage" %}
+  </div>
+  <div class="mb-6">
+    <label for="{{ form.valid_from.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Valid From</label>
+    {% render_field form.valid_from class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="YYYY-MM-DD HH:MM AM/PM" %}
+</div>
+
+<div class="mb-6">
+    <label for="{{ form.valid_to.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Valid To</label>
+    {% render_field form.valid_to class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="YYYY-MM-DD HH:MM AM/PM" %}
+</div>
+
+  {% comment %} <div class="mb-6">
+    <label for="{{ form.valid_from.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Valid From</label>
+    {% render_field form.valid_from class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="YYYY-MM-DD HH:MM AM/PM" %}
+  </div>
+
+  <div class="mb-6">
+    <label for="{{ form.valid_to.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Valid To</label>
+    {% render_field form.valid_to class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="YYYY-MM-DD HH:MM AM/PM" %}
+  </div> {% endcomment %}
+
+  <div class="mb-6 flex">
+    <label for="{{ form.active.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Active</label>
+    {% render_field form.active class="w-5 h-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Active" %}
+  </div>
+
+  <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+</form>
+</div>
+
+{% endblock %}

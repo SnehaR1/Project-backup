@@ -1,0 +1,44 @@
+{% extends 'core/core_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+  <div class="container mx-auto px-6 py-10">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">THANK YOU</h1>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Your order is confirmed</h2>
+
+    <div class="w-full md:w-1/2 border shadow mb-6">
+      <h3 class="font-bold">Order Information</h3>
+      <p>Order number: {{ latest_order.id }}</p>
+      <p>Date: {{ latest_order.created_at }}</p>
+      <ul class="list-disc ml-4">
+          {% for order_item in orderitems %}
+              <li>
+                  {% if order_item.product.product_variant %}
+                      {{ order_item.product.product_variant.title }} {{order_item.product.color}}- Quantity: {{ order_item.quantity }} - Price: ${{ order_item.price }}
+                      {% if order_item.product.product_variant.status %}
+                          - Status: {{ order_item.product.product_variant.status }}
+                      {% endif %}
+                  {% else %}
+                      {{ order_item.product.title }} - Quantity: {{ order_item.quantity }} - Price: ${{ order_item.price.price }}
+                  {% endif %}
+              </li>
+          {% endfor %}
+      </ul>
+      {% comment %} <a href="#" class="mt-4 text-blue-600">View invoice</a> {% endcomment %}
+  </div>
+  
+  
+
+    <div class="w-full md:w-1/2 mt-6 md:mt-0 border shadow">
+      <h3 class="font-bold">Shipping Address</h3>
+      <p>{{ latest_order.shipping_address.address_line1 }}</p>
+      <p>{{ latest_order.shipping_address.phone }}</p>
+
+     <h3 class="font-bold">Payment Method</h3> <p>{{ latest_order.payment_method }}</p>
+      
+
+      <h3 class="mt-6">Total</h3>
+      <p class="text-2xl font-bold text-gray-800">₹{{ latest_order.total_price }}</p>
+    </div>
+  </div>
+{% endblock content %}

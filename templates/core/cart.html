@@ -1,0 +1,107 @@
+{% extends 'core/core_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}Alaia | Cart{% endblock %}
+{% block content %}
+<div class="bg-gray-100 h-screen py-8">
+    <div class="container mx-auto px-4">
+        <h1 class="text-2xl font-semibold mb-4">Shopping Cart</h1>
+        <div class="flex flex-col md:flex-row gap-4">
+            <div class="md:w-3/4">
+                <div class="bg-white rounded-lg shadow-md p-6 mb-4">
+                    <table class="w-full">
+                        <thead>
+                            <tr>
+                                <th class="text-left font-semibold">Product</th>
+                                <th class="text-left font-semibold">Price</th>
+                                <th class="text-left font-semibold">Quantity</th>
+                                <th class="text-left font-semibold">Total</th>
+                                <th class="text-left font-semibold">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_order.cartorderitems_set.all %}
+                            <tr>
+                                <td class="py-4">
+                                    <div class="flex items-center">
+                                        {% if item.price.image %}
+                                        <img class="h-16 w-16 mr-4" src="{{ item.price.image.url }}" alt="Product image">
+                                        {% endif %}
+                                        <span class="font-semibold"> {{ item.price.product.title }}-{{item.price.color}}-{{item.price.quantity}}</span>
+                                    </div>
+                                </td>
+                                <td class="py-4">${{ item.price.price }}</td>
+                                <td class="py-4">
+                                    <div class="flex items-center">
+                                        <form id="item_form_{{ item.id }}" data-item-id="{{ item.id }}" class="item-form">
+                                            {% csrf_token %}
+                                            <button class="border rounded-md py-2 px-4 mr-2 change-quantity decrement"
+                                                    data-url="{% url 'decrease_quantity' item.id %}"><a href="{% url 'decrease_quantity' item.id %}">-</a></button>
+                                                    <span class="text-center w-8 quantity-display">{{ item.quantity }}</span>
+
+                                            <button class="border rounded-md py-2 px-4 ml-2 change-quantity increment"
+                                                    data-url="{% url 'increase_quantity' item.id %}"> <a href="{% url 'increase_quantity' item.id %}">+</button>
+                                        </form>
+                                    </div>
+                                    
+                                </td>
+                                <td class="py-4">${{ item.calculate_total }}</td>
+
+                            </td>
+                            <td class="py-4 "><a href="{% url 'dlt_cart' item.id %}"> <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg></a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="md:w-1/4">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-lg font-semibold mb-4">Summary</h2>
+                    <div class="flex justify-between mb-2">
+                        <span>Subtotal</span>
+                        <span>${{ overall_total }}</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span>Taxes</span>
+                        <span>$0.00</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span>Shipping</span>
+                        <span>$0.00</span>
+                    </div>
+                    <hr class="my-2">
+                    <div class="flex justify-between mb-2">
+                        <span class="font-semibold">Total</span>
+                        <span class="font-semibold">${{ overall_total }}</span>
+                    </div>
+                    <button class="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 w-full"><a href="{% url 'checkout' %}">Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Function to be called on button click
+    function onClickFunction() {
+      // Make an AJAX request using jQuery
+      $.ajax({
+        url: 'https://example.com/api', // Replace with your actual endpoint
+        method: 'GET',
+        success: function(response) {
+          // The request was successful, handle the response here
+          console.log(response);
+        },
+        error: function(error) {
+          // Handle errors here
+          console.error('Error:', error);
+        }
+      });
+    }
+    
+    // Attach the function to the button click event
+    $('#myButton').on('click', onClickFunction);
+    </script>
+    {% endblock content %}

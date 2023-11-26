@@ -1,0 +1,48 @@
+{% extends 'base.html'%}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}Alaia | OTP{% endblock %}
+{% block content %}
+<body class="grid place-items-center bg-no-repeat bg-cover bg-top mt-48" style="background-image: url('{% static "images/backgrounds/otp.png" %}');">
+  <div class="w-full bg-pink-50 max-w-sm rounded-xl overflow-hidden shadow-md p-4">
+      <div class="px-6 py-4 pt-0 pb-0">
+          <img class="w-full mb-0" src="{% static 'images/backgrounds/otp_logo.png' %}" alt="logo">
+          <p class="flex text-gray-700 text-base justify-center text-black-50 text-4xl ">
+              OTP Verification
+          </p>
+      </div>
+      {% if messages %}
+      {% for message in messages %}
+      {% if message.tags == "success" %}
+      <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+        {{message}}
+      </div>
+      {% else %}
+      <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+        <strong>Error! </strong>{{message}}
+      </div>
+      {% endif %}
+      {% endfor %}
+      {% endif %}
+      <div class="px-6 pt-4 pb-2">
+
+ 
+          <form action="" method="post">
+              {% csrf_token %}
+
+              <label for="otp"></label>
+              <input type="text" id="otp" name="otp" class="mb-4 border border-amber-500 flex justify-center border p-3 rounded-2xl w-full placeholder-black-500" placeholder="Enter the verification code" />
+              
+         
+              <div class="flex justify-center">
+                <input type="submit" value="Verify" class="w-3/4 flex justify-center bg-red-400 hover:bg-red-500 text-white p-3 rounded-3xl">
+                </div>
+              
+          </form>
+         
+
+      </div>
+  </div>
+</body>
+
+{% endblock %}
